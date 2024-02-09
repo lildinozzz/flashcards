@@ -6,6 +6,10 @@ class Model {
     this.answer = answer;
   }
 }
+async function readTopics() {
+  const topics = await fs.readdir('./topics');
+  return topics.map((el) => el.split('_')[0]);
+}
 
 async function getQuestion(fileName) {
   const data = await fs.readFile(`./topics/${fileName}_flashcard_data.txt`, 'utf-8').then((elem) => elem.split('\n\n')); // array with 'Являются ли еноты травоядными, плотоядными или всеядными?\nвсеядными',
@@ -16,6 +20,6 @@ async function getQuestion(fileName) {
   });
 }
 
-console.log(getQuestion('otter').then(console.log));
+console.log(Model.getQuestion());
 
 module.exports = Model;
