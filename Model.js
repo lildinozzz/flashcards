@@ -1,21 +1,32 @@
+const { read } = require('fs');
+
 const fs = require('fs').promises;
 
 class Model {
-  constructor(question, answer) {
+  constructor(type, index, question, answer) {
+    this.type = type;
+    this.index = index;
     this.question = question;
     this.answer = answer;
   }
 }
 
+async function readTopics() {
+  const topics = fs.readdir('./topics/');
+  return (await topics).map((elem) => elem.split('_')[0]); // разбиваем по названиям через _ и достаем ток [0] элемы
+}
+
 async function getQuestion(fileName) {
   const data = await fs.readFile(`./topics/${fileName}_flashcard_data.txt`, 'utf-8').then((elem) => elem.split('\n\n')); // array with 'Являются ли еноты травоядными, плотоядными или всеядными?\nвсеядными',
   const newData = data.map((elem) => elem.split('\n')); // мэпаем на два элема в одном массиве
+  let index = 1;
   return newData.map((elem) => { // мэпаем по элементу и создаем обьект
-    const object = new Model(elem[0], elem[1]);
+    const object = new Model('input', index++, elem[0], elem[1]);
     return object;
   });
 }
 
-console.log(getQuestion('otter').then(console.log));
+// console.log(getQuestion('otter').then(console.log));
+// console.log(readTopics().then(console.log));
 
 module.exports = Model;
